@@ -1,0 +1,21 @@
+{
+  "files.associations": {
+    "*.epub": "xml",
+    "*.Rmd": "rmarkdown",
+    "*.rmd": "markdown",
+    "*.html": "html",
+    ".clang-format": "yaml",
+    ".htmlhintrc": "json",
+    ".prettierrc": "json",
+    ".stylelintrc": "json",
+    "sglib.h": "c",
+    "vector": "c",
+    "ledc.h": "c",
+    "chrono": "c",
+    "condition_variable": "c",
+    "ctime": "c",
+    "mutex": "c",
+    "thread": "c"
+  },
+  "sonarlint.pathToCompileCommands": "${workspaceFolder}\\.pio\\build\\esp32dev\\compile_commands.json"
+}
