@@ -15,7 +15,9 @@
     "condition_variable": "c",
     "ctime": "c",
     "mutex": "c",
-    "thread": "c"
+    "thread": "c",
+    "gpio.h": "c",
+    "pcnt.h": "c"
   },
-  "sonarlint.pathToCompileCommands": "${workspaceFolder}\\.pio\\build\\esp32dev\\compile_commands.json"
+  "sonarlint.pathToCompileCommands": "${workspaceFolder}/.pio/build/esp32dev/bootloader/compile_commands.json"
 }
