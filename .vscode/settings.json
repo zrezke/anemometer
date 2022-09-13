@@ -17,7 +17,10 @@
     "mutex": "c",
     "thread": "c",
     "gpio.h": "c",
-    "pcnt.h": "c"
+    "pcnt.h": "c",
+    "anemometer.h": "c",
+    "timer.h": "c",
+    "freertos.h": "c"
   },
   "sonarlint.pathToCompileCommands": "${workspaceFolder}/.pio/build/esp32dev/bootloader/compile_commands.json"
 }
