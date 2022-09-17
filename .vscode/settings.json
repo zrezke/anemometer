@@ -1,0 +1,16 @@
+{
+  "files.associations": {
+    "*.epub": "xml",
+    "*.Rmd": "rmarkdown",
+    "*.rmd": "markdown",
+    "*.html": "html",
+    ".clang-format": "yaml",
+    ".htmlhintrc": "json",
+    ".prettierrc": "json",
+    ".stylelintrc": "json",
+    "freertos.h": "c",
+    "anemometer.h": "c",
+    "pcnt.h": "c",
+    "gpio.h": "c"
+  }
+}
