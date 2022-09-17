@@ -1,0 +1,15 @@
+{
+  "idf.adapterTargetName": "esp32",
+  "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/bootloader/compile_commands.json",
+  "files.associations": {
+    "*.epub": "xml",
+    "*.Rmd": "rmarkdown",
+    "*.rmd": "markdown",
+    "*.html": "html",
+    ".clang-format": "yaml",
+    ".htmlhintrc": "json",
+    ".prettierrc": "json",
+    ".stylelintrc": "json",
+    "gpio.h": "c"
+  }
+}
