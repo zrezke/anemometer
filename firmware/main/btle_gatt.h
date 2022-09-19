@@ -1,0 +1,3 @@
+enum {
+  WIND_SPEED
+};

@@ -10,6 +10,21 @@
     ".htmlhintrc": "json",
     ".prettierrc": "json",
     ".stylelintrc": "json",
-    "gpio.h": "c"
-  }
+    "gpio.h": "c",
+    "bta_api.h": "c",
+    "esp_bt_main.h": "c",
+    "esp_gatts_api.h": "c",
+    "task.h": "c",
+    "pcnt.h": "c",
+    "btle_gap.h": "c",
+    "time.h": "c",
+    "queue.h": "c",
+    "timer.h": "c",
+    "freertos.h": "c",
+    "esp_bt_defs.h": "c",
+    "esp_bt.h": "c",
+    "sdkconfig.h": "c",
+    "esp_log.h": "c"
+  },
+  "C_Cpp.errorSquiggles": "Enabled"
 }
