@@ -137,12 +137,34 @@ void handleCounterQueue()
 */
 
 static const uint16_t primary_service_uuid = ESP_GATT_UUID_PRI_SERVICE;
+static const uint16_t character_declaration_uuid = ESP_GATT_UUID_CHAR_DECLARE;
+static const uint8_t char_prop_read = ESP_GATT_CHAR_PROP_BIT_READ;
+static const uint16_t character_client_config_uuid = ESP_GATT_UUID_CHAR_CLIENT_CONFIG;
+
+#define CHAR_DECLARATION_SIZE (sizeof(uint8_t))
+static const uint16_t GATTS_CHAR_UUID_TEST_A = 0xFF01;
+#define GATTS_DEMO_CHAR_VAL_LEN_MAX 500
+static const uint8_t heart_measurement_ccc[2] = {0x00, 0x00};
+static const uint8_t char_value[4] = {0x11, 0x22, 0x33, 0x44};
 /// Full HRS Database Description - Used to add attributes into the database
 static const esp_gatts_attr_db_t anemometer_gatt_db[WIND_SPEED_NUMBER_OF_CHARACTERISTICS] =
     {
         // Heart Rate Service Declaration
-        [WIND_SPEED_CHARACTERISTIC] =
+        [WIND_SPEED_SERVICE] =
             {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&primary_service_uuid, ESP_GATT_PERM_READ, sizeof(uint16_t), sizeof(true_wind_speed_service_uuid), (uint8_t *)&true_wind_speed_service_uuid}},
+
+        // Wind speed characteristic declaration
+        [WIND_SPEED_CHARACTERISTIC] =
+            {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_declaration_uuid, ESP_GATT_PERM_READ, CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&char_prop_read}},
+
+        /* Characteristic Value */
+        [WIND_SPEED_CHAR_VAL] =
+            {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&GATTS_CHAR_UUID_TEST_A, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE, GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(char_value), (uint8_t *)char_value}},
+
+        /* Client Characteristic Configuration Descriptor */
+        [WIND_SPEED_CFG] =
+            {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_client_config_uuid, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE, sizeof(uint16_t), sizeof(heart_measurement_ccc), (uint8_t *)heart_measurement_ccc}},
+
 };
 
 static void gatts_profile_event_handler(esp_gatts_cb_event_t event,
@@ -176,20 +198,19 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event,
   case ESP_GATTS_CONNECT_EVT:
   {
     /* For the IOS system, please reference the apple official documents about the ble connection parameters restrictions. */
-    esp_ble_conn_update_params_t conn_params = {
-        .latency = 0,
-        .max_int = 0x30, // max_int = 0x30*1.25ms = 40ms
-        .min_int = 0x10, // min_int = 0x10*1.25ms = 20ms
-        .timeout = 400   // timeout = 400*10ms = 4000ms
-    };
+    esp_ble_conn_update_params_t conn_params = {0};
     memcpy(conn_params.bda, param->connect.remote_bda, sizeof(esp_bd_addr_t));
+    conn_params.latency = 0;
+    conn_params.max_int = 0x20; // max_int = 0x20*1.25ms = 40ms
+    conn_params.min_int = 0x10; // min_int = 0x10*1.25ms = 20ms
+    conn_params.timeout = 400;  // timeout = 400*10ms = 4000ms
     ESP_LOGI(GATTS_TABLE_TAG, "ESP_GATTS_CONNECT_EVT, conn_id %d, remote %02x:%02x:%02x:%02x:%02x:%02x:, is_conn %d",
              param->connect.conn_id,
              param->connect.remote_bda[0], param->connect.remote_bda[1], param->connect.remote_bda[2],
              param->connect.remote_bda[3], param->connect.remote_bda[4], param->connect.remote_bda[5]);
     // start sent the update connection parameters to the peer device.
-    esp_ble_gap_update_conn_params(&conn_params);
     anemometer_profile_tab[ANEMOMETER_PROFILE_APP_IDX].conn_id = param->connect.conn_id;
+    esp_ble_gap_update_conn_params(&conn_params);
     break;
   }
   case ESP_GATTS_CREAT_ATTR_TAB_EVT:
@@ -208,9 +229,24 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event,
     else
     {
       memcpy(wind_speed_handle_table, param->add_attr_tab.handles, sizeof(wind_speed_handle_table));
-      esp_ble_gatts_start_service(wind_speed_handle_table[WIND_SPEED_CHARACTERISTIC]);
+      esp_ble_gatts_start_service(wind_speed_handle_table[WIND_SPEED_SERVICE]);
       ESP_LOGI(GATTS_TABLE_TAG, "Created handle table successfully.");
     }
+    break;
+  }
+  case ESP_GATTS_READ_EVT:
+  {
+    ESP_LOGI(GATTS_TABLE_TAG, "GATT_READ_EVT, conn_id %d, trans_id %d, handle %d\n", param->read.conn_id, param->read.trans_id, param->read.handle);
+    esp_gatt_rsp_t rsp;
+    memset(&rsp, 0, sizeof(esp_gatt_rsp_t));
+    rsp.attr_value.handle = param->read.handle;
+    rsp.attr_value.len = 4;
+    rsp.attr_value.value[0] = 0xde;
+    rsp.attr_value.value[1] = 0xed;
+    rsp.attr_value.value[2] = 0xbe;
+    rsp.attr_value.value[3] = 0xef;
+    esp_ble_gatts_send_response(gatts_if, param->read.conn_id, param->read.trans_id,
+                                ESP_GATT_OK, &rsp);
     break;
   }
   default:
