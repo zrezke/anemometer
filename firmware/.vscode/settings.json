@@ -24,7 +24,11 @@
     "esp_bt_defs.h": "c",
     "esp_bt.h": "c",
     "sdkconfig.h": "c",
-    "esp_log.h": "c"
+    "esp_log.h": "c",
+    "nvs_flash.h": "c",
+    "esp_system.h": "c",
+    "event_groups.h": "c",
+    "esp_gap_ble_api.h": "c"
   },
   "C_Cpp.errorSquiggles": "Enabled"
 }
