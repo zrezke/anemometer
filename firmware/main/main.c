@@ -27,7 +27,6 @@
 #include "btle_gatt.h"
 
 #define GATTS_TABLE_TAG "GATTS TABLE TAG"
-/*
 typedef struct
 {
   bool update;
@@ -134,8 +133,6 @@ void handleCounterQueue()
   }
 }
 
-*/
-
 static const uint16_t primary_service_uuid = ESP_GATT_UUID_PRI_SERVICE;
 static const uint16_t character_declaration_uuid = ESP_GATT_UUID_CHAR_DECLARE;
 static const uint8_t char_prop_read = ESP_GATT_CHAR_PROP_BIT_READ;
@@ -145,21 +142,29 @@ static const uint16_t character_client_config_uuid = ESP_GATT_UUID_CHAR_CLIENT_C
 static const uint16_t GATTS_CHAR_UUID_TEST_A = 0xFF01;
 #define GATTS_DEMO_CHAR_VAL_LEN_MAX 500
 static const uint8_t heart_measurement_ccc[2] = {0x00, 0x00};
-static const uint8_t char_value[4] = {0x11, 0x22, 0x33, 0x44};
+// static const uint8_t char_value[4] = {0x11, 0x22, 0x33, 0x44};
+
+// static const uint8_t wind_speed[sizeof(float)];
+static union
+{
+  float value;
+  uint8_t bytes[4];
+} wind_speed;
+
 /// Full HRS Database Description - Used to add attributes into the database
 static const esp_gatts_attr_db_t anemometer_gatt_db[WIND_SPEED_NUMBER_OF_CHARACTERISTICS] =
     {
         // Heart Rate Service Declaration
         [WIND_SPEED_SERVICE] =
-            {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&primary_service_uuid, ESP_GATT_PERM_READ, sizeof(uint16_t), sizeof(true_wind_speed_service_uuid), (uint8_t *)&true_wind_speed_service_uuid}},
+            {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_16, (uint8_t *)&primary_service_uuid, ESP_GATT_PERM_READ, sizeof(uint16_t), sizeof(true_wind_speed_service_uuid), (uint8_t *)&true_wind_speed_service_uuid}},
 
         // Wind speed characteristic declaration
         [WIND_SPEED_CHARACTERISTIC] =
-            {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&character_declaration_uuid, ESP_GATT_PERM_READ, CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&char_prop_read}},
+            {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_16, (uint8_t *)&character_declaration_uuid, ESP_GATT_PERM_READ, CHAR_DECLARATION_SIZE, CHAR_DECLARATION_SIZE, (uint8_t *)&char_prop_read}},
 
         /* Characteristic Value */
         [WIND_SPEED_CHAR_VAL] =
-            {{ESP_GATT_AUTO_RSP}, {ESP_UUID_LEN_16, (uint8_t *)&GATTS_CHAR_UUID_TEST_A, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE, GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(char_value), (uint8_t *)char_value}},
+            {{ESP_GATT_RSP_BY_APP}, {ESP_UUID_LEN_16, (uint8_t *)&GATTS_CHAR_UUID_TEST_A, ESP_GATT_PERM_READ | ESP_GATT_PERM_WRITE, GATTS_DEMO_CHAR_VAL_LEN_MAX, sizeof(wind_speed.bytes), (uint8_t *)wind_speed.bytes}},
 
         /* Client Characteristic Configuration Descriptor */
         [WIND_SPEED_CFG] =
@@ -239,12 +244,9 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event,
     ESP_LOGI(GATTS_TABLE_TAG, "GATT_READ_EVT, conn_id %d, trans_id %d, handle %d\n", param->read.conn_id, param->read.trans_id, param->read.handle);
     esp_gatt_rsp_t rsp;
     memset(&rsp, 0, sizeof(esp_gatt_rsp_t));
+    memcpy(rsp.attr_value.value, wind_speed.bytes, 4);
     rsp.attr_value.handle = param->read.handle;
     rsp.attr_value.len = 4;
-    rsp.attr_value.value[0] = 0xde;
-    rsp.attr_value.value[1] = 0xed;
-    rsp.attr_value.value[2] = 0xbe;
-    rsp.attr_value.value[3] = 0xef;
     esp_ble_gatts_send_response(gatts_if, param->read.conn_id, param->read.trans_id,
                                 ESP_GATT_OK, &rsp);
     break;
@@ -358,7 +360,6 @@ void app_main()
   esp_ble_gatts_register_callback(gatts_event_handler);
   esp_ble_gap_register_callback(gap_event_handler);
   esp_ble_gatts_app_register(ESP_ANEMOMETER_APP_ID);
-  /*
   s_timer_queue = xQueueCreate(10, sizeof(timer_event_t));
   s_counter_queue = xQueueCreate(10, sizeof(counter_event_t));
   printf("HELLO WORLD\n");
@@ -375,8 +376,14 @@ void app_main()
     {
       update_rotation_frequency();
       // printf("Current second rotations: %d\n", current_second_rotations);
-      //printf("ROTATIONS: %d, WIND SPEED: %f\n", rotation_frequency, Ar * rotation_frequency + B);
+      wind_speed.value = Ar * rotation_frequency + B;
+      printf("ROTATIONS: %d, WIND SPEED: %f ", rotation_frequency, wind_speed.value);
+      for (int i = 0; i < 4; i++)
+      {
+        printf("%d", wind_speed.bytes[i]);
+        printf("-");
+      }
+      printf("\n");
     }
   }
-  */
 }
