@@ -3,7 +3,9 @@
 The anemometer V1 is a fully open source hand held wind speed measuring device intended for low accuracy applications.
 
 Check out the demo video:
-[![https://www.youtube.com/watch?v=-xksoXeRDyU](https://yt-embed.herokuapp.com/embed?v=-xksoXeRDyU)](https://www.youtube.com/watch?v=-xksoXeRDyU)
+<a href="https://www.youtube.com/watch?v=-xksoXeRDyU" target="_blank">
+  <img src="https://yt-embed.herokuapp.com/embed?v=-xksoXeRDyU"/>
+</a>
 
 Actual wind speed at the time of measuring was about $5.8 m/s$  
 Source:
