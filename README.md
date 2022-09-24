@@ -8,7 +8,21 @@ The anemometer V1 is a fully open source hand held wind speed measuring device i
   <img width="45%" src="doc/img/IMG_20220921_125106.jpg"/>
 </div>
 
-If you have a 3d printer everything else needed to build this device is commonly available, bellow is a list of the parts needed to build this device.
+If you have a 3d printer everything else needed to build this device is commonly available.
+
+Check out the demo video:
+<a href="https://www.youtube.com/watch?v=-xksoXeRDyU" target="_blank">
+<img src="https://yt-embed.herokuapp.com/embed?v=-xksoXeRDyU"/>
+</a>
+
+Measured wind speed (not average wind speed) was varying from $2.66m/s$ to $6.54m/s$, mostly it was showing $3.95 m/s$ or $5.25m/s$. I think the results are acceptable because there were definitely some lulls and gusts and the wind speed wasn't averaged.
+
+Actual **average wind speed** at the time of measuring was about $5.8 m/s$  
+Source:
+
+- https://monitor.protezionecivile.fvg.it/#/misure/69/6
+- Time of measuring: 24.09.2022 @13:56.
+- Location: Grado, Italy
 
 ## Parts List
 
