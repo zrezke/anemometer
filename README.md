@@ -123,7 +123,7 @@ To expose data to the client application a Bluetooth Low Energy GATT server is s
 As seen in the chart above, the GATT server has an Anemometer profile with a wind speed service that exposes the wind speed characteristic as READ only.
 
 <div align="center">
-  <img width="45%" src="dov/img/btgatt_closeup.png"/>
+  <img width="45%" src="doc/img/btgatt_closeup.png"/>
 </div>
 The firmware also configures BT LE GAP for advertising.
 If you want to learn about BT LE GATT and GAP I recommend reading these two articles:
