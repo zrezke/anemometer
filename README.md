@@ -114,6 +114,7 @@ All tasks in the queue get processed before the **timer** interrupt is triggered
 Once we have the `rotation_frequency` we can calculate the wind speed using the formula:
 
 $$ V = A f + B $$
+
 ... where $A$ and $B$ are calibration coefficients, $V$ is wind speed and $f$ is the anemometer's _rotation frequency output_ (**not rotation frequency**).  
 $A$ and $B$ are normally determined experimentally in a wind tunnel. But since we are using this device for low accuracy applications we use the coefficients from Ornytion 107A anemometer when it's used with 60/40 cups (that's what the cups are modeled after).
 
